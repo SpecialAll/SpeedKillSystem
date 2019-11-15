@@ -4,12 +4,11 @@
 <mapper namespace="com.zxh.speedsale_system.mapper.SpeedKillOrderMapper">
     <!-- 插入订单明细 -->
     <insert id="insertOrder">
-        insert into "order"(goodsId, money, userId)
-        values (#{goodsId}, #{money}, #{userId})
+        INSERT INTO `order` (userId, goodsId, money)
+        values (#{userId}, #{goodsId}, #{money})
     </insert>
 
-    <select id="findbyUserId" resultType="OrderDetailDO">
-        select * from "order"
-        where userId = #{userId}
+    <select id="findByUserId" resultType="OrderDetailDO">
+        select * from `order` where userId = #{userId}
     </select>
 </mapper>

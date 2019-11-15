@@ -31,5 +31,5 @@ public interface SpeedKillOrderMapper {
      * @param userId
      * @return
      */
-    List<OrderDetailDO> finbByUserId(@Param("userId") long userId);
+    List<OrderDetailDO> findByUserId(@Param("userId") long userId);
 }
