@@ -1,0 +1,13 @@
+create table `order`
+(
+	id bigint auto_increment,
+	userId bigint not null,
+	goodsId bigint not null,
+	money decimal(10,2) not null,
+	createTime timestamp default current_timestamp not null,
+	status tinyint default -1 not null comment '状态：-1无效 0成功 1已付款',
+	constraint order_pk
+		primary key (id, userId) /*联合主键，保证一个用户只能秒杀一件商品*/
+)
+    CHARSET=utf8 ENGINE=InnoDB comment '订单表';
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxh.speedsale_system.mapper.SpeedKillOrderMapper">
+    <!-- 插入订单明细 -->
+    <insert id="insertOrder">
+        insert into "order"(goodsId, money, userId)
+        values (#{goodsId}, #{money}, #{userId})
+    </insert>
+
+    <select id="findbyUserId" resultType="OrderDetailDO">
+        select * from "order"
+        where userId = #{userId}
+    </select>
+</mapper>

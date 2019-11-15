@@ -1,0 +1,15 @@
+create table goods
+(
+    id         bigint auto_increment comment '主键id
+'
+        primary key,
+    goodsTitle varchar(1000)                           not null comment '商品标题',
+    goodsImage varchar(1000)                           not null comment '商品图片',
+    price      decimal(10, 2)                          not null comment '商品原价格',
+    stockCount bigint                                  not null comment '商品库存',
+    killPrice  decimal(10, 2)                          not null,
+    createTime timestamp default '1970-02-01 00:00:01' not null,
+    startTime  timestamp default '1970-02-01 00:00:01' not null,
+    endTime    timestamp default '1970-02-01 00:00:01' not null
+)
+    comment '商品表';

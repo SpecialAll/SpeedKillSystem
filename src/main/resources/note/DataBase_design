@@ -1,0 +1,24 @@
+数据库设计思路：
+    包含以下表单：
+    1、商品表：
+        具体字段：id、商品标题（title）、商品图片（image）、商品原价格（price）
+        商品秒杀价格（killPrice）、当前商品的秒杀时间（startTime、endTime）、商品库存数量（stockCount)
+
+    2、用户表:
+        用户id、用户手机号（userPhone）
+    3、订单表：
+        订单id、用户id、支付金额（money）、商品id、订单状态（-1:无效 0:成功 1:已付款）、创建时间
+
+注意点：
+    1.我这里使用的Mysql版本是5.7.22，在Mysql5.7之后timestamp默认值不能再是0000 00-00 00:00:00，具体的介绍请看：mysql官方文档。即 TIMESTAMP has a range of ‘1970-01-01 00:00:01’ UTC to ‘2038-01-19 03:14:07’ UTC.
+
+    2.timestamp类型用来实现自动为新增行字段设置当前系统时间；且使用timestamp的字段必须给timestamp设置默认值，而在Mysql中date, datetime等类型都是无法实现默认设置当前系统时间值的功能(DEFAULT CURRENT_TIMESTAMP)的，所以我们必须使用timestamp类型，否则你要给字段传进来系统时间。
+
+    3.decimal类型用于在数据库中设置精确的数值，比如decimal(10,2)表示可以存储10位且有2位小数的数值。
+
+    4.tinyint类型用于存放int类型的数值，但是若用Mybatis作为DAO层框架，Mybatis会自动为tinyint类型的数据转换成true或false（0:false; 1 or 1+:true）。
+
+    5.在订单表seckill_order中我们设计了联合主键：PRIMARY KEY (seckill_id, user_phone)，目的是为了避免单个用户重复购买同一件商品（一个用户只能秒杀到一次同一件商品）。
+
+    6.无论是创建数据库还是创建表我们都应该养成一个习惯就是指定character=utf-8，避免中文数据乱码；其次还应该指定表的储存引擎是InnoDB，MySQL提供了两种储存引擎：InnoDB, MyISAM。但是只有InnoDB是支持事务的，且InnoDB相比MyISAM在并发上更具有高性能的优点。
+
