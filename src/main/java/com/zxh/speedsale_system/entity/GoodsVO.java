@@ -1,9 +1,6 @@
 package com.zxh.speedsale_system.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,6 +16,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class GoodsVO {
     private long goodsId;  //商品id
     private String goodsTitle;  //商品标题

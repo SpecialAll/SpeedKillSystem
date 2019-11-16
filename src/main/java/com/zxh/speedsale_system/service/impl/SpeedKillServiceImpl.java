@@ -47,30 +47,30 @@ public class SpeedKillServiceImpl implements SpeedKillService {
     @Autowired
     private SpeedKillOrderMapper orderMapper;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+//    @Autowired
+//    private RedisTemplate redisTemplate;
 
 
     /**
      * 查看所有秒杀商品的信息
      *
-     * 在查询环节使用redis缓存来解决提示效率问题
+     * 在查询环节使用redis缓存来解决提升效率问题
      */
     @Override
     public List<GoodsVO> findAll() {
-        List<GoodsDO> list = redisTemplate.boundHashOps("goods").values();
-        if(list.isEmpty()){
+//        List<GoodsDO> list = redisTemplate.boundHashOps("goods").values();
+//        if(list.isEmpty()){
             //如果进入判断，则说明缓存中没有秒杀商品列表信息
             //然后去查询数据库
-            list = goodsMapper.findAll();
-            for(GoodsDO goods : list){
-                //将秒杀数据依次放入到redis缓存中去
-                redisTemplate.boundHashOps(key).put(goods.getGoodsId(),goods);
-                log.info("findAll ——> 从数据中读取数据放入redis缓存中");
-            }
-        } else {
-            log.info("findAll ——> 从缓存中读取数据");
-        }
+        List<GoodsDO> list = goodsMapper.findAll();
+//            for(GoodsDO goods : list){
+//                //将秒杀数据依次放入到redis缓存中去
+//                redisTemplate.boundHashOps(key).put(goods.getGoodsId(),goods);
+//                log.info("findAll ——> 从数据中读取数据放入redis缓存中");
+//            }
+//        } else {
+//            log.info("findAll ——> 从缓存中读取数据");
+//        }
         List<GoodsVO> ansList = new ArrayList<>();
         for(GoodsDO goods : list){
             GoodsVO goodsVO = getGoodsVo(goods);
@@ -91,27 +91,28 @@ public class SpeedKillServiceImpl implements SpeedKillService {
      */
     @Override
     public Exposer exportSpeedKillUrl(long killGoodsId) {
-        GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(killGoodsId);
-        if(goods == null){
+//        GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(killGoodsId);
+//        if(goods == null){
             //为空则表示缓存中没有秒杀信息，去数据库中查询
-            goods = goodsMapper.findById(killGoodsId);
+            GoodsDO goods = goodsMapper.findById(killGoodsId);
             if(goods == null){
                 //表示没有此类商品
                 return new Exposer(false,killGoodsId);
-            } else {
-                //将查询到的商品信息存储到缓存中
-                redisTemplate.boundHashOps(key).put(killGoodsId, goods);
-                log.info("RedisTemplate ——> 从数据库中读取数据存入缓存");
             }
-        } else {
-            log.info("RedisTemplate ——> 缓存获取数据");
-        }
+//            else {
+//                //将查询到的商品信息存储到缓存中
+//                redisTemplate.boundHashOps(key).put(killGoodsId, goods);
+//                log.info("RedisTemplate ——> 从数据库中读取数据存入缓存");
+//            }
+//        } else {
+//            log.info("RedisTemplate ——> 缓存获取数据");
+//        }
         Date startTime = goods.getStartTime();
         Date endTime = goods.getEndTime();
         //获取系统时间
         Date nowTime = new Date();
         if(startTime.getTime() > nowTime.getTime() || endTime.getTime() < nowTime.getTime()){
-            return new Exposer(false, killGoodsId, nowTime.getTime(), startTime.getTime(),endTime.getTime());
+            return new Exposer(false, killGoodsId, startTime,endTime,nowTime);
         }
         /**
          * /使用MD5 + 盐的加密方式
@@ -170,10 +171,10 @@ public class SpeedKillServiceImpl implements SpeedKillService {
                     //秒杀成功
                     OrderDetailDO orderDO = orderMapper.findByUserIdAndGoodsId(userId, goodsId);
 
-                    //更新缓存更新缓存数量
-                    GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(goodsId);
-                    goods.setStockCount(goods.getStockCount() - 1);
-                    redisTemplate.boundHashOps(key).put(goodsId, goods);
+//                    //更新缓存更新缓存数量
+//                    GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(goodsId);
+//                    goods.setStockCount(goods.getStockCount() - 1);
+//                    redisTemplate.boundHashOps(key).put(goodsId, goods);
 
                     return new SpeedKillExecution(goodsId, SpeedKillStateEnum.SUCCESS, getOrderVO(orderDO));
                 }
@@ -192,7 +193,7 @@ public class SpeedKillServiceImpl implements SpeedKillService {
 
     private GoodsVO getGoodsVo(GoodsDO goods) {
         GoodsVO goodsVO = new GoodsVO();
-        goodsVO.setGoodsId(goods.getGoodsId());
+        goodsVO.setGoodsId(goods.getId());
         goodsVO.setEndTime(goods.getEndTime());
         goodsVO.setGoodsTitle(goods.getGoodsTitle());
         goodsVO.setImage(goods.getImage());

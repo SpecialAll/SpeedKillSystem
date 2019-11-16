@@ -1,9 +1,6 @@
 package com.zxh.speedsale_system.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.annotation.Generated;
 import java.math.BigDecimal;
@@ -20,8 +17,9 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class GoodsDO {
-    private long goodsId;  //商品id
+    private long id;  //商品id
     private String goodsTitle;  //商品标题
     private String image;  //商品图片
     private BigDecimal price;  //商品原价格
@@ -32,4 +30,5 @@ public class GoodsDO {
     private Date endTime;  //秒杀结束时间
 
     private  long stockCount; //库存数量
+
 }

@@ -1,9 +1,6 @@
 package com.zxh.speedsale_system.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -18,6 +15,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Exposer {
     //是否开启秒杀
     private boolean exposed;
@@ -29,20 +27,20 @@ public class Exposer {
     private long killGoodsId;
 
     //秒杀开始时间
-    private long startTime;
+    private Date startTime;
 
     //秒杀结束时间
-    private long endTime;
+    private Date endTime;
 
     //系统当前时间
-    private long nowTime;
+    private Date nowTime;
 
     public Exposer(boolean exposed, long killGoodsId){
         this.exposed = exposed;
         this.killGoodsId = killGoodsId;
     }
 
-    public Exposer(boolean exposed, long killGoodsId, long startTime, long endTime, long nowTime){
+    public Exposer(boolean exposed, long killGoodsId, Date startTime, Date endTime, Date nowTime){
         this.killGoodsId = killGoodsId;
         this.exposed = exposed;
         this.endTime = endTime;
@@ -55,4 +53,6 @@ public class Exposer {
         this.killGoodsId = killGoodsId;
         this.md5 = md5;
     }
+
+
 }
