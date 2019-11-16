@@ -2,7 +2,6 @@ package com.zxh.speedsale_system.ServiceTest;
 
 import com.zxh.speedsale_system.dto.Exposer;
 import com.zxh.speedsale_system.dto.SpeedKillExecution;
-import com.zxh.speedsale_system.entity.GoodsDO;
 import com.zxh.speedsale_system.entity.GoodsVO;
 import com.zxh.speedsale_system.service.SpeedKillService;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.validation.constraints.Max;
 import java.math.BigDecimal;
 import java.util.List;
 

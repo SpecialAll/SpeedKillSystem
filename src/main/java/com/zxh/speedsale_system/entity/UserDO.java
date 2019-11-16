@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDo {
+public class UserDO {
     private long id;
-    private long phoneNumber; //用户手机号
+    private long userPhone; //用户手机号
 }

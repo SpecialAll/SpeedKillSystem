@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxh.speedsale_system.mapper.SpeedKillUserMapper">
+    <insert id="loginUser">
+        insert into `user`(userPhone) value (#{userPhone});
+    </insert>
+    <select id="getUser" resultType="UserDO">
+        select * from `user` where userPhone = #{userPhone};
+    </select>
+</mapper>

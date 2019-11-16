@@ -20,7 +20,7 @@ import java.util.Date;
 public class GoodsVO {
     private long goodsId;  //商品id
     private String goodsTitle;  //商品标题
-    private String image;  //商品图片
+    private String goodsImage;  //商品图片
     private BigDecimal price;  //商品原价格
     private BigDecimal killPrice; //秒杀价格；
 

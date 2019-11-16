@@ -196,7 +196,7 @@ public class SpeedKillServiceImpl implements SpeedKillService {
         goodsVO.setGoodsId(goods.getId());
         goodsVO.setEndTime(goods.getEndTime());
         goodsVO.setGoodsTitle(goods.getGoodsTitle());
-        goodsVO.setImage(goods.getImage());
+        goodsVO.setGoodsImage(goods.getGoodsImage());
         goodsVO.setKillPrice(goods.getKillPrice());
         goodsVO.setStartTime(goods.getStartTime());
         goodsVO.setStockCount(goods.getStockCount());
