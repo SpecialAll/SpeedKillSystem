@@ -22,14 +22,16 @@ public interface SpeedKillOrderMapper {
      * @param money   支付金额
      * @param userId  用户id
      * @return  返回该sql更新的记录数，如果>=1,表示插入成功
+     *
+     * 这里包含一个防止重刷的措施，goodsId和userId是作为联合主键使用的，所以当用户id和秒杀商品id相同时会跑出异常！！！！
      */
     int insertOrder(@Param("goodsId") long goodsId, @Param("money") BigDecimal money, @Param("userId") long userId);
 
     /**
-     * 用户查看自己的所有秒杀商品订单
+     * 用户查看自己的秒杀商品订单
      *
      * @param userId
      * @return
      */
-    List<OrderDetailDO> findByUserId(@Param("userId") long userId);
+    OrderDetailDO findByUserIdAndGoodsId(@Param("userId") long userId, @Param("goodsId") long goodsId);
 }

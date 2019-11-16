@@ -13,7 +13,7 @@ import java.util.Date;
  * @Author ningque
  * @Date 2019/11/14
  *
- *  商品信息实体类 - Vo
+ *  商品信息实体类 - Vo service层返回值
  */
 @Setter
 @Getter

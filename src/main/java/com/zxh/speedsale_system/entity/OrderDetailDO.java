@@ -18,10 +18,13 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class OrderDetailDO {
-    private long orderId;  //订单id
     private long userId;   //用户id
     private long goodsId;   //秒杀的商品id
     private BigDecimal money;  //支付的金额；
     private boolean status; //订单状态， -1:无效 0:成功 1:已付款
     private Date createTime;  //创建时间
+
+    public boolean getStatus() {
+        return status;
+    }
 }

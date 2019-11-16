@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.validation.constraints.Max;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @version 1.0
@@ -21,7 +19,7 @@ import java.util.List;
 @SpringBootTest
 public class OrderMapperTest {
     @Autowired
-    SpeedKillOrderMapper orderMapper;
+    private SpeedKillOrderMapper orderMapper;
 
     @Test
     public void insertOrder(){
@@ -31,9 +29,8 @@ public class OrderMapperTest {
 
     @Test
     public void findByUserId(){
-        List<OrderDetailDO> list = orderMapper.findByUserId(2);
-        for(OrderDetailDO order : list){
+        OrderDetailDO order = orderMapper.findByUserIdAndGoodsId(2,6);
             System.out.println(order.toString());
-        }
+
     }
 }

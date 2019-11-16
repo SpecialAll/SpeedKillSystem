@@ -20,7 +20,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KillOrderVO {
-    private long orderId;   //订单id
     private long goodsId;
     private BigDecimal money;
     private long userId;
