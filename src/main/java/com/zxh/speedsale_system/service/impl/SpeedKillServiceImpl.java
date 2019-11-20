@@ -47,8 +47,8 @@ public class SpeedKillServiceImpl implements SpeedKillService {
     @Autowired
     private SpeedKillOrderMapper orderMapper;
 
-//    @Autowired
-//    private RedisTemplate redisTemplate;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     /**
@@ -58,19 +58,19 @@ public class SpeedKillServiceImpl implements SpeedKillService {
      */
     @Override
     public List<GoodsVO> findAll() {
-//        List<GoodsDO> list = redisTemplate.boundHashOps("goods").values();
-//        if(list.isEmpty()){
+        List<GoodsDO> list = redisTemplate.boundHashOps("goods").values();
+        if(list.isEmpty()){
             //如果进入判断，则说明缓存中没有秒杀商品列表信息
             //然后去查询数据库
-        List<GoodsDO> list = goodsMapper.findAll();
-//            for(GoodsDO goods : list){
-//                //将秒杀数据依次放入到redis缓存中去
-//                redisTemplate.boundHashOps(key).put(goods.getGoodsId(),goods);
-//                log.info("findAll ——> 从数据中读取数据放入redis缓存中");
-//            }
-//        } else {
-//            log.info("findAll ——> 从缓存中读取数据");
-//        }
+            list = goodsMapper.findAll();
+            for(GoodsDO goods : list){
+                //将秒杀数据依次放入到redis缓存中去
+                redisTemplate.boundHashOps(key).put(goods.getId(),goods);
+                log.info("findAll ——> 从数据中读取数据放入redis缓存中");
+            }
+        } else {
+            log.info("findAll ——> 从缓存中读取数据");
+        }
         List<GoodsVO> ansList = new ArrayList<>();
         for(GoodsDO goods : list){
             GoodsVO goodsVO = getGoodsVo(goods);
@@ -91,22 +91,22 @@ public class SpeedKillServiceImpl implements SpeedKillService {
      */
     @Override
     public Exposer exportSpeedKillUrl(long killGoodsId) {
-//        GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(killGoodsId);
-//        if(goods == null){
+        GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(killGoodsId);
+        if(goods == null){
             //为空则表示缓存中没有秒杀信息，去数据库中查询
-            GoodsDO goods = goodsMapper.findById(killGoodsId);
+            goods = goodsMapper.findById(killGoodsId);
             if(goods == null){
                 //表示没有此类商品
                 return new Exposer(false,killGoodsId);
             }
-//            else {
-//                //将查询到的商品信息存储到缓存中
-//                redisTemplate.boundHashOps(key).put(killGoodsId, goods);
-//                log.info("RedisTemplate ——> 从数据库中读取数据存入缓存");
-//            }
-//        } else {
-//            log.info("RedisTemplate ——> 缓存获取数据");
-//        }
+            else {
+                //将查询到的商品信息存储到缓存中
+                redisTemplate.boundHashOps(key).put(killGoodsId, goods);
+                log.info("RedisTemplate ——> 从数据库中读取数据存入缓存");
+            }
+        } else {
+            log.info("RedisTemplate ——> 缓存获取数据");
+        }
         Date startTime = goods.getStartTime();
         Date endTime = goods.getEndTime();
         //获取系统时间
@@ -158,6 +158,13 @@ public class SpeedKillServiceImpl implements SpeedKillService {
         Date nowTime = new Date();
         try {
             //存储订单信息
+            /**
+             * 这里涉及一个优化点：
+             *      将订单插入执行在修改库存之前，是因为update、insert、delete会自动加排它锁，
+             *      所以为了降低占用锁的时间，我们这样进行优化：
+             *      先执行插入订单的操作，因为如果同一个人两次秒杀就会造成插入失败，从而不用执行减库存操作；
+             *      这样就相当于减少一次不必要的占锁时间；
+             */
             int insertCount = orderMapper.insertOrder(goodsId,money,userId);
             if(insertCount <= 0){
                 throw new RepeatKillException("speedKill Repeat");
@@ -171,10 +178,13 @@ public class SpeedKillServiceImpl implements SpeedKillService {
                     //秒杀成功
                     OrderDetailDO orderDO = orderMapper.findByUserIdAndGoodsId(userId, goodsId);
 
-//                    //更新缓存更新缓存数量
-//                    GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(goodsId);
-//                    goods.setStockCount(goods.getStockCount() - 1);
-//                    redisTemplate.boundHashOps(key).put(goodsId, goods);
+                    /**
+                     *   更新缓存
+                     *      这里注意redis和数据库的顺序，在执行写操作的时候，应该是先删除缓存的数据，等到下次访问时再去数据库查询写入！
+                     */
+                    GoodsDO goods = (GoodsDO) redisTemplate.boundHashOps(key).get(goodsId);
+                    redisTemplate.boundHashOps(key).delete(goodsId);
+                    log.info("删除缓存库存数据:{}"+goods.toString());
 
                     return new SpeedKillExecution(goodsId, SpeedKillStateEnum.SUCCESS, getOrderVO(orderDO));
                 }
