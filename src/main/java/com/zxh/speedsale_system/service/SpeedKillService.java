@@ -38,5 +38,5 @@ public interface SpeedKillService {
      * 执行秒杀操作
      */
     SpeedKillExecution executeSpeedKill(long goodsId, BigDecimal money, long userId, String md5)
-        throws SpeedKillException, SpeedKillCloseException, RepeatKillException;
+        throws SpeedKillCloseException, RepeatKillException, SpeedKillException;
 }

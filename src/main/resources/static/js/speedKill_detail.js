@@ -50,9 +50,9 @@ var speedKill = {
                     node.show();
                 } else {
                     //未开启秒杀
-                    var now = exposer['now'];
-                    var start = exposer['start'];
-                    var end = exposer['end'];
+                    var now = exposer['nowTime'];
+                    var start = exposer['startTime'];
+                    var end = exposer['endTime'];
                     speedKill.countdown(goodsId, now, start, end);
                 }
             } else {

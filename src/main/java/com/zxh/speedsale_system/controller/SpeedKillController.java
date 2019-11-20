@@ -54,9 +54,9 @@ public class SpeedKillController {
         if(goodsId == null){
             return "/page/speedKill";
         }
-        GoodsVO goods = speedKillService.findById(goodsId);
-        model.addAttribute("speedKill", goods);
-        if(goods == null){
+        GoodsVO speedKill = speedKillService.findById(goodsId);
+        model.addAttribute("speedKill", speedKill);
+        if(speedKill == null){
             return "/page/speedKill";
         }
         return "/page/speedKill_detail";
@@ -82,7 +82,7 @@ public class SpeedKillController {
                     produces = {"application/json;charset=UTF-8"})
     public SpeedKillResult<SpeedKillExecution> execute(@PathVariable("goodsId") Long goodsId,
                                                        @PathVariable("md5") String md5,
-                                                       @PathVariable("money") BigDecimal money,
+                                                       @RequestParam("money") BigDecimal money,
                                                        @CookieValue(value = "killPhone", required = false) Long userPhone ){
         if(userPhone == null){
             return new SpeedKillResult<SpeedKillExecution>(false, "未注册");
@@ -93,13 +93,13 @@ public class SpeedKillController {
             return new SpeedKillResult<SpeedKillExecution>(true, execution);
         } catch (RepeatKillException e) {
             SpeedKillExecution execution = new SpeedKillExecution(goodsId, SpeedKillStateEnum.REPEAT_KILL);
-            return new SpeedKillResult<SpeedKillExecution>(false,execution);
+            return new SpeedKillResult<SpeedKillExecution>(true,execution);
         } catch (SpeedKillCloseException e) {
             SpeedKillExecution execution = new SpeedKillExecution(goodsId, SpeedKillStateEnum.END);
-            return new SpeedKillResult<SpeedKillExecution>(false,execution);
+            return new SpeedKillResult<SpeedKillExecution>(true,execution);
         } catch (SpeedKillException e) {
             SpeedKillExecution execution = new SpeedKillExecution(goodsId, SpeedKillStateEnum.INNER_ERROR);
-            return new SpeedKillResult<SpeedKillExecution>(false,execution);
+            return new SpeedKillResult<SpeedKillExecution>(true,execution);
         }
     }
 
