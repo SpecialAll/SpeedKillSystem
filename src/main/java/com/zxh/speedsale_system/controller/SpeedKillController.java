@@ -43,6 +43,11 @@ public class SpeedKillController {
         return "/page/speedKill";
     }
 
+//    @RequestMapping("/index")
+//    public String getIndex(Model model){
+//        return "/page/index";
+//    }
+
     @ResponseBody
     @RequestMapping("/findById")
     public GoodsVO findById(@RequestParam("id") Long id){
